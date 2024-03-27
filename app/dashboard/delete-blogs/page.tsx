@@ -1,18 +1,15 @@
 
 import React from 'react';
 import { deleteBlog } from '@/pages/api/blog';
-import { IBlog } from '@/types/blogs'
 import { useRouter } from 'next/navigation';
 
 
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure } from "@nextui-org/react";
 import { FiTrash2 } from 'react-icons/fi';
 
-interface DeleteBlogProps {
-    blog: IBlog
-}
 
-const DeleteBlogs: React.FC<DeleteBlogProps> = ({ blog }) => {
+
+const DeleteBlogs = ({ blog } : {blog : any}) => {
     const router = useRouter();
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const handleDelete = async (id: string) => {

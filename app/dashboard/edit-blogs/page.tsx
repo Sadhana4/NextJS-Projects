@@ -1,22 +1,18 @@
 import { editBlog } from '@/pages/api/blog';
-import { IBlog } from '@/types/blogs';
 import { useRouter } from 'next/navigation';
 import React, { FormEventHandler, useState } from 'react';
 import { FiEdit } from 'react-icons/fi';
 import { Modal, ModalContent, ModalHeader, ModalBody, Button, useDisclosure } from "@nextui-org/react";
-
-
-interface EditBlogProps {
-    blog: IBlog
-}
+import { UploadButton } from '@/utils/uploadthing';
 
 
 
-const EditBlogs: React.FC<EditBlogProps> = ({ blog }) => {
+
+const EditBlogs = ({ blog }: { blog: any }) => {
     const router = useRouter();
     const [editTitle, setEditTitle] = useState<string>(blog.title);
     const [editBody, setEditBody] = useState<string>(blog.body);
-    const [editImage, setEditImage] = useState<string>(blog.image);
+    const [editImageUrl, setEditImageUrl] = useState<string>(blog.image);
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -26,7 +22,7 @@ const EditBlogs: React.FC<EditBlogProps> = ({ blog }) => {
             id: blog.id,
             title: editTitle,
             body: editBody,
-            image: editImage
+            image: editImageUrl
         });
 
         router.refresh();
@@ -55,12 +51,21 @@ const EditBlogs: React.FC<EditBlogProps> = ({ blog }) => {
                                         <label className='form-label' htmlFor="body">Description</label>
                                         <textarea name='body' className='form-control' onChange={(e) => setEditBody(e.target.value)} value={editBody} required />
                                     </div>
-                                    <div>
-                                        <label className='form-label' htmlFor="image">Image</label>
-                                        <input id='image' name='image' className='form-control' type="file" onChange={(e) => setEditImage(e.target.value)} value={editImage} />
+                                    <div className='mt-3'>
+                                        <UploadButton
+                                            endpoint="imageUploader"
+                                            onClientUploadComplete={(res) => {
+                                                // Do something with the response
+                                                console.log("Files: ", res);
+                                                setEditImageUrl(res[0].url);
+                                                alert("Upload Completed");
+                                            }}
+                                            onUploadError={(error: Error) => {
+                                                // Do something with the error.
+                                                alert(`ERROR! ${error.message}`);
+                                            }}
+                                        />
                                     </div>
-
-
                                     <Button className='btn btn-primary mt-3 ms-auto' type='submit' onPress={onClose}>Submit</Button>
                                 </form>
 
